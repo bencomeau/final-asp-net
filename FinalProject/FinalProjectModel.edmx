@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FinalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AverageDirectionalIndexes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="trend" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DowJones">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="date_id" Type="int" Nullable="false" />
+          <Property Name="average_directional_index_id" Type="int" Nullable="false" />
+          <Property Name="open_value" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="close_value" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReportingDates">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="reporting_date" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UnemploymentRates">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="date_id" Type="int" Nullable="false" />
+          <Property Name="unemployment_rate" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_DowJones_AverageDirectionalIndexes">
+          <End Role="AverageDirectionalIndexes" Type="Self.AverageDirectionalIndexes" Multiplicity="1" />
+          <End Role="DowJones" Type="Self.DowJones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AverageDirectionalIndexes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="DowJones">
+              <PropertyRef Name="average_directional_index_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DowJones_ReportingDates">
+          <End Role="ReportingDates" Type="Self.ReportingDates" Multiplicity="1" />
+          <End Role="DowJones" Type="Self.DowJones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReportingDates">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="DowJones">
+              <PropertyRef Name="date_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UnemploymentRates_ReportingDates">
+          <End Role="ReportingDates" Type="Self.ReportingDates" Multiplicity="1" />
+          <End Role="UnemploymentRates" Type="Self.UnemploymentRates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReportingDates">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UnemploymentRates">
+              <PropertyRef Name="date_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FinalModelStoreContainer">
+          <EntitySet Name="AverageDirectionalIndexes" EntityType="Self.AverageDirectionalIndexes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DowJones" EntityType="Self.DowJones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReportingDates" EntityType="Self.ReportingDates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnemploymentRates" EntityType="Self.UnemploymentRates" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_DowJones_AverageDirectionalIndexes" Association="Self.FK_DowJones_AverageDirectionalIndexes">
+            <End Role="AverageDirectionalIndexes" EntitySet="AverageDirectionalIndexes" />
+            <End Role="DowJones" EntitySet="DowJones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DowJones_ReportingDates" Association="Self.FK_DowJones_ReportingDates">
+            <End Role="ReportingDates" EntitySet="ReportingDates" />
+            <End Role="DowJones" EntitySet="DowJones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UnemploymentRates_ReportingDates" Association="Self.FK_UnemploymentRates_ReportingDates">
+            <End Role="ReportingDates" EntitySet="ReportingDates" />
+            <End Role="UnemploymentRates" EntitySet="UnemploymentRates" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FinalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AverageDirectionalIndex">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="trend" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="DowJones" Relationship="Self.FK_DowJones_AverageDirectionalIndexes" FromRole="AverageDirectionalIndexes" ToRole="DowJones" />
+        </EntityType>
+        <EntityType Name="DowJone">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="date_id" Type="Int32" Nullable="false" />
+          <Property Name="average_directional_index_id" Type="Int32" Nullable="false" />
+          <Property Name="open_value" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="close_value" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AverageDirectionalIndex" Relationship="Self.FK_DowJones_AverageDirectionalIndexes" FromRole="DowJones" ToRole="AverageDirectionalIndexes" />
+          <NavigationProperty Name="ReportingDate" Relationship="Self.FK_DowJones_ReportingDates" FromRole="DowJones" ToRole="ReportingDates" />
+        </EntityType>
+        <EntityType Name="ReportingDate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="reporting_date" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="DowJones" Relationship="Self.FK_DowJones_ReportingDates" FromRole="ReportingDates" ToRole="DowJones" />
+          <NavigationProperty Name="UnemploymentRates" Relationship="Self.FK_UnemploymentRates_ReportingDates" FromRole="ReportingDates" ToRole="UnemploymentRates" />
+        </EntityType>
+        <EntityType Name="UnemploymentRate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="date_id" Type="Int32" Nullable="false" />
+          <Property Name="unemployment_rate" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ReportingDate" Relationship="Self.FK_UnemploymentRates_ReportingDates" FromRole="UnemploymentRates" ToRole="ReportingDates" />
+        </EntityType>
+        <Association Name="FK_DowJones_AverageDirectionalIndexes">
+          <End Role="AverageDirectionalIndexes" Type="Self.AverageDirectionalIndex" Multiplicity="1" />
+          <End Role="DowJones" Type="Self.DowJone" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AverageDirectionalIndexes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="DowJones">
+              <PropertyRef Name="average_directional_index_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DowJones_ReportingDates">
+          <End Role="ReportingDates" Type="Self.ReportingDate" Multiplicity="1" />
+          <End Role="DowJones" Type="Self.DowJone" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReportingDates">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="DowJones">
+              <PropertyRef Name="date_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UnemploymentRates_ReportingDates">
+          <End Role="ReportingDates" Type="Self.ReportingDate" Multiplicity="1" />
+          <End Role="UnemploymentRates" Type="Self.UnemploymentRate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReportingDates">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UnemploymentRates">
+              <PropertyRef Name="date_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FinalEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AverageDirectionalIndexes" EntityType="Self.AverageDirectionalIndex" />
+          <EntitySet Name="DowJones" EntityType="Self.DowJone" />
+          <EntitySet Name="ReportingDates" EntityType="Self.ReportingDate" />
+          <EntitySet Name="UnemploymentRates" EntityType="Self.UnemploymentRate" />
+          <AssociationSet Name="FK_DowJones_AverageDirectionalIndexes" Association="Self.FK_DowJones_AverageDirectionalIndexes">
+            <End Role="AverageDirectionalIndexes" EntitySet="AverageDirectionalIndexes" />
+            <End Role="DowJones" EntitySet="DowJones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DowJones_ReportingDates" Association="Self.FK_DowJones_ReportingDates">
+            <End Role="ReportingDates" EntitySet="ReportingDates" />
+            <End Role="DowJones" EntitySet="DowJones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UnemploymentRates_ReportingDates" Association="Self.FK_UnemploymentRates_ReportingDates">
+            <End Role="ReportingDates" EntitySet="ReportingDates" />
+            <End Role="UnemploymentRates" EntitySet="UnemploymentRates" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FinalModelStoreContainer" CdmEntityContainer="FinalEntities">
+          <EntitySetMapping Name="AverageDirectionalIndexes">
+            <EntityTypeMapping TypeName="FinalModel.AverageDirectionalIndex">
+              <MappingFragment StoreEntitySet="AverageDirectionalIndexes">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="trend" ColumnName="trend" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DowJones">
+            <EntityTypeMapping TypeName="FinalModel.DowJone">
+              <MappingFragment StoreEntitySet="DowJones">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="date_id" ColumnName="date_id" />
+                <ScalarProperty Name="average_directional_index_id" ColumnName="average_directional_index_id" />
+                <ScalarProperty Name="open_value" ColumnName="open_value" />
+                <ScalarProperty Name="close_value" ColumnName="close_value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReportingDates">
+            <EntityTypeMapping TypeName="FinalModel.ReportingDate">
+              <MappingFragment StoreEntitySet="ReportingDates">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="reporting_date" ColumnName="reporting_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnemploymentRates">
+            <EntityTypeMapping TypeName="FinalModel.UnemploymentRate">
+              <MappingFragment StoreEntitySet="UnemploymentRates">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="date_id" ColumnName="date_id" />
+                <ScalarProperty Name="unemployment_rate" ColumnName="unemployment_rate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
