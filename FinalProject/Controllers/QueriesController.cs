@@ -12,11 +12,11 @@ namespace FinalProject.Controllers
         FinalEntities finalCollection = new FinalEntities();
 
         [Route("api/queries/one")]
-        public IHttpActionResult QueryOne(string year)
+        public IHttpActionResult GetQueryOne(string year)
         {
             var data = from reportingDates in finalCollection.ReportingDates
                        where reportingDates.reporting_date.Contains(year)
-                       select reportingDates.reporting_date;
+                       select new { reportDate = reportingDates.reporting_date };
 
             if (data.Any())
             {
@@ -29,11 +29,13 @@ namespace FinalProject.Controllers
 
         [Route("api/queries/two")]
 
-        public IHttpActionResult QueryTwo(string year)
+        public IHttpActionResult GetQueryTwo(string year)
         {
             var data = from reportingDates in finalCollection.ReportingDates
-                       where reportingDates.reporting_date.Contains(year)
-                       select reportingDates.reporting_date;
+                       join urate in finalCollection.UnemploymentRates on reportingDates.id equals urate.date_id into urateGroup
+                       from item in urateGroup.DefaultIfEmpty()
+                       where String.Compare(reportingDates.reporting_date.Substring(0,4), year) >= 0
+                       select new { reportDate = reportingDates.reporting_date, rate = item == null ? 0 : item.unemployment_rate  };
 
             if (data.Any())
             {
@@ -47,11 +49,11 @@ namespace FinalProject.Controllers
 
         [Route("api/queries/three")]
 
-        public IHttpActionResult QueryThree(string year)
+        public IHttpActionResult GetQueryThree(string year)
         {
-            var data = from reportingDates in finalCollection.ReportingDates
-                       where reportingDates.reporting_date.Contains(year)
-                       select reportingDates.reporting_date;
+            var data = from dow in finalCollection.DowJones
+                       where String.Compare(dow.ReportingDate.reporting_date.Substring(0, 4), year) >= 0
+                       select new { reportDate = dow.ReportingDate.reporting_date, dowOpen = dow.open_value, dowClose = dow.close_value };
 
             if (data.Any())
             {
