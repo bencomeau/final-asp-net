@@ -11,17 +11,48 @@ namespace FinalProject.Controllers
     {
         FinalEntities finalCollection = new FinalEntities();
 
-        [Route("api/queries/one")]
-        public IHttpActionResult GetQueryOne(string year)
+        [Route("api/queries/adi")]
+        public IHttpActionResult GetADI()
         {
-            var data = from reportingDates in finalCollection.ReportingDates
-                       where reportingDates.reporting_date.Contains(year)
-                       select new { reportDate = reportingDates.reporting_date };
+            var data =
+                from adi in finalCollection.AverageDirectionalIndexes
+                select new { adi.id, trend = adi.trend.Trim() };
 
             if (data.Any())
             {
                 return Json(new { data = data.ToList() });
-            } else
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [Route("api/queries/one")]
+        public IHttpActionResult GetQueryOne(string year)
+        {
+            // Query for getting previous n years and showing the reporting date, the dow open/close, and urate
+            var data =
+                from reportingDates in finalCollection.ReportingDates
+                join uRate in finalCollection.UnemploymentRates on reportingDates.id equals uRate.date_id into uRateGroup
+                join dow in finalCollection.DowJones on reportingDates.id equals dow.date_id into dowGroup
+                from item in uRateGroup.DefaultIfEmpty()
+                from dowData in dowGroup.DefaultIfEmpty()
+                where String.Compare(reportingDates.reporting_date.Substring(0, 4), year) >= 0
+                select new
+                {
+                    reportDate = reportingDates.reporting_date,
+                    unemploymentRate = item == null ? 0 : item.unemployment_rate,
+                    dowOpen = dowData.open_value,
+                    dowClose = dowData.close_value,
+                    dowClosedHigher = dowData == null ? false : String.Compare(dowData.close_value, dowData.open_value) >= 0
+                };
+
+            if (data.Any())
+            {
+                return Json(new { data = data.ToList() });
+            }
+            else
             {
                 return NotFound();
             }
@@ -29,13 +60,17 @@ namespace FinalProject.Controllers
 
         [Route("api/queries/two")]
 
-        public IHttpActionResult GetQueryTwo(string year)
+        public IHttpActionResult GetQueryTwo()
         {
-            var data = from reportingDates in finalCollection.ReportingDates
-                       join urate in finalCollection.UnemploymentRates on reportingDates.id equals urate.date_id into urateGroup
-                       from item in urateGroup.DefaultIfEmpty()
-                       where String.Compare(reportingDates.reporting_date.Substring(0,4), year) >= 0
-                       select new { reportDate = reportingDates.reporting_date, rate = item == null ? 0 : item.unemployment_rate  };
+            // Canned query to show the DOW data with ADI
+            var data =
+                from dow in finalCollection.DowJones
+                select new {
+                    dowOpen = dow.open_value,
+                    dowClose = dow.close_value,
+                    dowTrend = dow.AverageDirectionalIndex.trend,
+                    reportDate = dow.ReportingDate.reporting_date
+                };
 
             if (data.Any())
             {
@@ -49,11 +84,17 @@ namespace FinalProject.Controllers
 
         [Route("api/queries/three")]
 
-        public IHttpActionResult GetQueryThree(string year)
+        public IHttpActionResult GetQueryThree(string trend)
         {
-            var data = from dow in finalCollection.DowJones
-                       where String.Compare(dow.ReportingDate.reporting_date.Substring(0, 4), year) >= 0
-                       select new { reportDate = dow.ReportingDate.reporting_date, dowOpen = dow.open_value, dowClose = dow.close_value };
+            // User input to get the DOW with only weak, flat, or strong ADI
+            var data =
+                from dow in finalCollection.DowJones
+                where dow.AverageDirectionalIndex.trend == trend
+                select new {
+                    dowOpen = dow.open_value,
+                    dowClose = dow.close_value,
+                    reportDate = dow.ReportingDate.reporting_date
+                };
 
             if (data.Any())
             {
