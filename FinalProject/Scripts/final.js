@@ -1,4 +1,11 @@
-﻿async function getData(url = '') {
+﻿const COLORS = {
+    RED: 'rgba(255, 99, 132, 1)',
+    RED_OPAQUE: 'rgba(255, 99, 132, 0.2',
+    BLUE: 'rgba(54, 162, 235, 1)',
+    BLUE_OPAQUE: 'rgba(54, 162, 235, 0.2)'
+};
+
+async function getData(url = '') {
     const response = await fetch(url, {
         method: 'GET',
         mode: 'cors',
@@ -14,58 +21,28 @@
     return response.json();
 }
 
-//window.addEventListener('load', () => {
-//    // Request employees and stores
-//    populateSelect('employeeSelect', 'employees');
-//    populateSelect('storeSelect', 'stores');
-//});
+window.addEventListener('load', () => {
+    // Request trends
+    populateSelect('queryThreeSelect', 'queries/adi');
+});
 
 /**
  * Populates the select options of the given select ID.
  * 
  * @param {string} selectId - The DOM ID of the select to populate with options.
- * @param {string} controllerName - The name of the controller to call.
+ * @param {string} endpoint - The name of the endpoint to call.
  */
-const populateSelect = async (selectId, controllerName) => {
-    const { data } = await getData(`api/${controllerName}`);
+const populateSelect = async (selectId, endpoint) => {
+    const { data } = await getData(`api/${endpoint}`);
 
     if (Array.isArray(data)) {
         const select = document.getElementById(selectId);
 
         for (const item of data) {
-            select.options[select.options.length] = new Option(item);
+            select.options[select.options.length] = new Option(item.trend);
         }
     }
 }
-
-//document.getElementById('getMarkups').addEventListener('click', async ev => {
-
-//    const successEl = document.getElementById('markupsMessage');
-//    const errorEl = document.getElementById('markupsError');
-
-//    try {
-//        const { stores } = await getData(`api/markups`);
-
-//        if (stores) {
-//            // Clear the previous list items so we don't continue
-//            // to get duplicates with each click of the button.
-//            successEl.innerHTML = '';
-//            stores.forEach(function (store) {
-//                const li = document.createElement('li');
-//                li.innerHTML = "City: " + store.city + ", Count: " + store.total;
-//                successEl.appendChild(li);
-//            });
-//            successEl.style.visibility = 'visible';
-//            errorEl.style.visibility = 'hidden';
-//        } else {
-//            successEl.style.visibility = 'hidden';
-//            errorEl.style.visibility = 'visible';
-//        }
-//    } catch (e) {
-//        successEl.style.visibility = 'hidden';
-//        errorEl.style.visibility = 'visible';
-//    }
-//});
 
 document.getElementById('queryOne').addEventListener('submit', async ev => {
     ev.preventDefault();
@@ -74,44 +51,132 @@ document.getElementById('queryOne').addEventListener('submit', async ev => {
     const errorEl = document.getElementById('queryOneError');
     const year = new FormData(ev.target).get('year')
 
+    
+});
+
+document.getElementById('queryTwo').addEventListener('submit', async ev => {
+    ev.preventDefault();
+
+    const errorEl = document.getElementById('queryTwoError');
+
     try {
-        const data = await getData(`api/queries/one?year=${year}`);
+        const { data } = await getData('api/queries/two');
 
         if (data) {
-            //document.getElementById('employeePerformanceAmount').innerHTML = sum;
-            successEl.style.visibility = 'visible';
+            const ctx = document.getElementById('queryTwoGraph').getContext('2d');
+
+            const chartData = {
+                labels: data.map(d => d.reportDate),
+                datasets: [
+                    {
+                        label: 'DOW Open',
+                        data: data.map(d => Math.round(d.dowOpen)),
+                        backgroundColor: COLORS.RED,
+                        borderColor: COLORS.RED_OPAQUE,
+                        trends: data.map(d => d.dowTrend.trim())
+                    },
+                    {
+                        label: 'DOW Close',
+                        data: data.map(d => Math.round(d.dowClose)),
+                        backgroundColor: COLORS.BLUE,
+                        borderColor: COLORS.BLUE_OPAQUE
+                    }
+                ]
+            };
+
+            new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Open and Close values of the DOW with ADI trends'
+                        },
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                footer: (tooltipItems) => 
+                                    `ADI Trend: ${tooltipItems[0].dataset.trends[tooltipItems[0].dataIndex]}`
+                            }
+                        }
+                    },
+                }
+            });
+
             errorEl.style.visibility = 'hidden';
         } else {
-            successEl.style.visibility = 'hidden';
+            
             errorEl.style.visibility = 'visible';
         }
     } catch (e) {
-        successEl.style.visibility = 'hidden';
+        
         errorEl.style.visibility = 'visible';
     }
 });
 
-//document.getElementById('storePerformance').addEventListener('submit', async ev => {
-//    ev.preventDefault();
+document.getElementById('queryThree').addEventListener('submit', async ev => {
+    ev.preventDefault();
 
-//    const successEl = document.getElementById('storePerformanceMessage');
-//    const errorEl = document.getElementById('storeError');
-//    const city = new FormData(ev.target).get('store');
+    const errorEl = document.getElementById('queryThreeError');
+    const trend = new FormData(ev.target).get('trend')
 
-//    try {
-//        const { sum } = await getData(`api/stores?city=${city}`);
+    try {
+        const { data } = await getData(`api/queries/three?trend=${trend}`);
 
-//        if (sum) {
-//            document.getElementById('storePerformanceAmount').innerHTML = sum;
-//            successEl.style.visibility = 'visible';
-//            errorEl.style.visibility = 'hidden';
-//        } else {
+        if (data) {
+            const ctx = document.getElementById('queryThreeGraph').getContext('2d');
+            data.map(d => {
+                console.log(d.dowOpen, d.dowClose, d.dowClose - d.dowOpen)
+            })
 
-//            successEl.style.visibility = 'hidden';
-//            errorEl.style.visibility = 'visible';
-//        }
-//    } catch (e) {
-//        successEl.style.visibility = 'hidden';
-//        errorEl.style.visibility = 'visible';
-//    }
-//});
+            const chartData = {
+                labels: data.map(d => d.reportDate),
+                datasets: [
+                    {
+                        label: 'DOW Interval',
+                        data: data.map(d => d.dowClose - d.dowOpen),
+                        backgroundColor: COLORS.RED,
+                        borderColor: COLORS.RED_OPAQUE
+                    },
+                ]
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `ADI ${trend} trend with DOW interval value`
+                        },
+                        legend: {
+                            position: 'top'
+                        },
+                    },
+                }
+            });
+
+            errorEl.style.visibility = 'hidden';
+        } else {
+
+            errorEl.style.visibility = 'visible';
+        }
+    } catch (e) {
+
+        errorEl.style.visibility = 'visible';
+    }
+});

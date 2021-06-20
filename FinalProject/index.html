@@ -7,6 +7,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" />
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
     <script src="Scripts/final.js" async></script>
     <meta charset="utf-8" />
     <title>ISIT 420 - Final Project</title>
@@ -21,17 +22,45 @@
         <hr />
         <div class="row">
             <div class="column">
-                <h3>First query</h3>
-                <p>Overlay Urate and DOW history.</p>
+                <h3>Historical DOW Jones against Unemployment Rate</h3>
+                <p>Overlay Unemployment Rate figures against the DOW Jones' history.</p>
                 <form id="queryOne">
+                    <label for="queryOneSelect">Starting Year</label>
                     <select name="year" id="queryOneSelect" required>
-                        <option value="">Select an year</option>
                         <option value="2016">2016</option>
                     </select>
                     <button type="submit">Get Data</button>
                 </form>
-                <p style="visibility:hidden" id="queryOneMessage">The data was returned</p>
+                <canvas id="queryOneGraph" width="600" height="400"></canvas>
                 <p style="visibility:hidden" id="queryOneError">There was an error. Try again.</p>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="column">
+                <h3>DOW Jones with Average Directional Index</h3>
+                <p>Get all available DOW data points and overlay the ADI</p>
+                <form id="queryTwo">
+                    <button type="submit">Get Data</button>
+                </form>
+                <canvas id="queryTwoGraph"></canvas>
+                <p style="visibility:hidden" id="queryTwoError">There was an error. Try again.</p>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="column">
+                <h3>Average Directional Index in Relation to DOW</h3>
+                <p>Determine if the ADI trend is reflected in DOW interval</p>
+                <form id="queryThree">
+                    <label for="queryThreeSelect">Starting Year</label>
+                    <select name="trend" id="queryThreeSelect" required>
+                        <option value="">Select Trend Type</option>
+                    </select>
+                    <button type="submit">Get Data</button>
+                </form>
+                <canvas id="queryThreeGraph"></canvas>
+                <p style="visibility:hidden" id="queryThreeError">There was an error. Try again.</p>
             </div>
         </div>
     </div>
