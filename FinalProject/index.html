@@ -16,30 +16,45 @@
     <div class="container">
         <div class="row">
             <div class="column">
-                <h1>DOW vs Unemployment Rate</h1>
+                <h1>Dow and the Unemployment Rate</h1>
+                <p>Using historical data of both the Dow Jones Industrial Average and the National Unemployment Rate, we are able to loosely analyze whether or not the Dow is affected by the Unemployment Rate, or vice versa.</p>
+                <h5>Glossary of Terms</h5>
+                <ul>
+                    <li>Dow Jones Industrial Average: a price-weighted measurement stock market index of the 30 prominent companies in the United States.</li>
+                    <li>Unemployment Rate: officially a part of the Employment Situation, this defines the national average of those unemployed.</li>
+                    <li>Average Directional Index: known as ADX, it is a technical analysis indicator used by traders to determine the strength of a trend; weak, flat, or strong.</li>
+                </ul>
             </div>
         </div>
         <hr />
         <div class="row">
             <div class="column">
-                <h3>Historical DOW Jones against Unemployment Rate</h3>
-                <p>Overlay Unemployment Rate figures against the DOW Jones' history.</p>
+                <h3>Historical Dow Jones against Unemployment Rate</h3>
+                <p>Overlay Unemployment Rate figures against the Dow Jones' history.</p>
                 <form id="queryOne">
                     <label for="queryOneSelect">Starting Year</label>
                     <select name="year" id="queryOneSelect" required>
+                        <option value="">Select a starting year</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
                         <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
                     </select>
                     <button type="submit">Get Data</button>
                 </form>
-                <canvas id="queryOneGraph" width="600" height="400"></canvas>
+                <canvas id="queryOneGraph"></canvas>
                 <p style="visibility:hidden" id="queryOneError">There was an error. Try again.</p>
             </div>
         </div>
         <hr />
         <div class="row">
             <div class="column">
-                <h3>DOW Jones with Average Directional Index</h3>
-                <p>Get all available DOW data points and overlay the ADI</p>
+                <h3>Dow Jones with Average Directional Index</h3>
+                <p>Get all available Dow data points and overlay the ADX</p>
                 <form id="queryTwo">
                     <button type="submit">Get Data</button>
                 </form>
@@ -50,12 +65,12 @@
         <hr />
         <div class="row">
             <div class="column">
-                <h3>Average Directional Index in Relation to DOW</h3>
-                <p>Determine if the ADI trend is reflected in DOW interval</p>
+                <h3>Average Directional Index in Relation to Dow</h3>
+                <p>Determine if the ADX trend is reflected in Dow interval</p>
                 <form id="queryThree">
                     <label for="queryThreeSelect">Starting Year</label>
                     <select name="trend" id="queryThreeSelect" required>
-                        <option value="">Select Trend Type</option>
+                        <option value="">Select a trend type</option>
                     </select>
                     <button type="submit">Get Data</button>
                 </form>
