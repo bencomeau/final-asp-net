@@ -11,12 +11,35 @@ namespace FinalProject.Controllers
     {
         FinalEntities finalCollection = new FinalEntities();
 
+        [Route("api/queries/reportingYears")]
+        public IHttpActionResult GetReportingYears()
+        {
+            // The DOW is the limiting factor since we have more
+            // steady data of the URATE, thus we limit result
+            // years to those containing DOW data
+            var data =
+                (from reportingDates in finalCollection.ReportingDates
+                 join dow in finalCollection.DowJones on reportingDates.id equals dow.date_id into dowGroup
+                 from dowRecords in dowGroup
+                 where dowRecords.open_value != null
+                 select reportingDates.reporting_date.Substring(0, 4)).Distinct();
+
+            if (data.Any())
+            {
+                return Json(new { data = data.ToList() });
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [Route("api/queries/adi")]
         public IHttpActionResult GetADI()
         {
             var data =
                 from adi in finalCollection.AverageDirectionalIndexes
-                select new { adi.id, trend = adi.trend.Trim() };
+                select adi.trend.Trim();
 
             if (data.Any())
             {

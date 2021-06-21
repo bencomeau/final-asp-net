@@ -119,8 +119,9 @@ const queryThreeChart = new Chart(queryThreeCtx, {
 });
 
 window.addEventListener('load', () => {
-    // Request trends
+    // Request trends and years
     populateSelect('queryThreeSelect', 'queries/adi');
+    populateSelect('queryOneSelect', 'queries/reportingYears');
 });
 
 /**
@@ -136,7 +137,7 @@ const populateSelect = async (selectId, endpoint) => {
         const select = document.getElementById(selectId);
 
         for (const item of data) {
-            select.options[select.options.length] = new Option(item.trend);
+            select.options[select.options.length] = new Option(item);
         }
     }
 }
