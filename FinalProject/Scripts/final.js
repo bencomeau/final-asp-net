@@ -81,7 +81,7 @@ const queryTwoChart = new Chart(queryTwoCtx, {
         plugins: {
             title: {
                 display: false,
-                text: 'Open and Close values of the DOW with ADI trends'
+                text: 'Open and Close values of the DOW with ADX trends'
             },
             legend: {
                 position: 'top'
@@ -89,7 +89,7 @@ const queryTwoChart = new Chart(queryTwoCtx, {
             tooltip: {
                 callbacks: {
                     footer: (tooltipItems) =>
-                        `ADI Trend: ${tooltipItems[0].dataset.trends[tooltipItems[0].dataIndex]}`
+                        `ADX Trend: ${tooltipItems[0].dataset.trends[tooltipItems[0].dataIndex]}`
                 }
             }
         },
